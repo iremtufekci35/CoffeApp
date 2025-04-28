@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="softPink">#F8C8D1</color>
+    <color name="softBlue">#A7C7E7</color>
+    <color name="lightGray">#D3D3D3</color>
+    <color name="darkLavender">#8A4F96</color>
+    <color name="light_gray">#D3D3D3</color>
+    <color name="light_blue">#ADD8E6</color>
+    <color name="dark_gray">#4B4B4B</color>
+    <color name="light_pink">#FFB6C1</color>
+    <color name="dark_purple">#6A0DAD</color>
+    <color name="lavender">#9B4D96</color>
+    <color name="deepLavender">#7A3E74</color>
+    <color name="lightLavender">#F3E5F5</color>
+    <color name="vividPink">#FF4081</color>
+    <color name="cream">#FFF9E6</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>
