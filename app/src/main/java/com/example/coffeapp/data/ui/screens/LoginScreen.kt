@@ -1,5 +1,7 @@
-package com.example.coffeapp.data.ui.login
+package com.example.coffeapp.data.ui.screens
 
+import com.example.coffeapp.data.ui.viewmodels.LoginState
+import com.example.coffeapp.data.ui.viewmodels.LoginViewModel
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape

@@ -1,4 +1,4 @@
-package com.example.coffeapp.data.ui.login
+package com.example.coffeapp.data.ui.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
