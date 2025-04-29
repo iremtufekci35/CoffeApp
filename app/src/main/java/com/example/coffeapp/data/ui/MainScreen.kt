@@ -11,9 +11,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.coffeapp.data.local.datastore.DataStoreManager
-import com.example.coffeapp.data.ui.cart.CartScreen
+import com.example.coffeapp.data.ui.screens.CartScreen
 import com.example.coffeapp.data.ui.components.BottomNavItem
 import com.example.coffeapp.data.ui.components.BottomNavigationBar
+import com.example.coffeapp.data.ui.screens.FavoritesScreen
 import com.example.coffeapp.data.ui.screens.HomeScreen
 import com.example.coffeapp.data.ui.screens.LoginScreen
 import com.example.coffeapp.data.ui.screens.ProfileScreen
@@ -46,18 +47,27 @@ fun MainScreen(
             Modifier.padding(innerPadding)
         ) {
             composable("login") {
-                LoginScreen(
-                    onLoginSuccess = { user ->
-                    }
-                )
+                LoginScreen(onLoginSuccess = { user -> })
             }
             composable(BottomNavItem.Home.route) { HomeScreen() }
             composable(BottomNavItem.Favorites.route) { FavoritesScreen() }
             composable(BottomNavItem.Cart.route) { CartScreen() }
-            composable(BottomNavItem.Account.route) { ProfileScreen() }
+            composable(BottomNavItem.Account.route) {
+                ProfileScreen(
+                    onOrdersClick = {
+                        // Navigate to Orders screen (e.g., "orders_screen")
+                    },
+                    onLogoutClick = {
+                        // Use LaunchedEffect for side effects like logout
+//                        LaunchedEffect(Unit) {
+//                            dataStoreManager.saveLoginStatus(false)  // Call the suspend function here
+//                            navController.navigate("login") {
+//                                popUpTo("login") { inclusive = true }  // Navigate back to login screen
+//                            }
+//                        }
+                    }
+                )
+            }
         }
     }
 }
-
-
-

@@ -1,4 +1,4 @@
-package com.example.coffeapp.data.ui.cart
+package com.example.coffeapp.data.ui.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -54,11 +54,20 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun insertCardItem(cartItem: CartItem) {
+    fun insertCartItem(cartItem: CartItem) {
         viewModelScope.launch {
             try {
-                appDatabaseImpl.insertCartItem(cartItem)
-                _cartItems.postValue(listOf(cartItem))
+                val existingItem = appDatabaseImpl.getCartItemByProductName(cartItem.productName)
+
+                if (existingItem != null) {
+                    val updatedItem = existingItem.copy(quantity = existingItem.quantity + cartItem.quantity)
+                    appDatabaseImpl.updateCartItem(updatedItem)
+                } else {
+                    appDatabaseImpl.insertCartItem(cartItem)
+                }
+
+                loadCartItems()
+
             } catch (e: Exception) {
                 e.printStackTrace()
             }

@@ -24,6 +24,13 @@ class AppDatabaseImpl(private val appDatabase: AppDatabase) {
     suspend fun clearCart() {
         appDatabase.cartDao().clearCart()
     }
+    suspend fun getCartItemByProductName(name: String): CartItem? {
+        return appDatabase.cartDao().getCartItemByProductName(name)
+    }
+    suspend fun updateCartItem(cartItem: CartItem) {
+        return appDatabase.cartDao().updateCartItem(cartItem)
+    }
+
 
     suspend fun insertProduct(product: Product) {
         appDatabase.productDao().insertProduct(product)

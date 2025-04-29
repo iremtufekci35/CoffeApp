@@ -1,4 +1,4 @@
-package com.example.coffeapp.data.ui.cart
+package com.example.coffeapp.data.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
@@ -22,15 +22,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.coffeapp.data.model.CartItem
+import com.example.coffeapp.data.ui.viewmodels.CartViewModel
 
 @Composable
 fun CartScreen() {
     val cartViewModel: CartViewModel = hiltViewModel()
     val cartItems by cartViewModel.cartItems.observeAsState(emptyList())
 
+    LaunchedEffect(Unit) {
+        cartViewModel.loadCartItems()
+    }
+
     val totalPrice = cartItems.sumOf { it.price * it.quantity }
     Log.d("CartScreen", "Cart Items: $cartItems")
-
     LaunchedEffect(totalPrice) {
         Log.d("CartScreen", "Toplam fiyat hesaplandı: ₺${"%.2f".format(totalPrice)}")
     }
@@ -47,7 +51,11 @@ fun CartScreen() {
         )
 
         if (cartItems.isEmpty()) {
-            Text("Sepetiniz boş.", style = TextStyle(fontSize = 18.sp, fontStyle = FontStyle.Italic), color = Color.Gray)
+            Text(
+                "Sepetiniz boş.",
+                style = TextStyle(fontSize = 18.sp, fontStyle = FontStyle.Italic),
+                color = Color.Gray
+            )
         } else {
             LazyColumn(
                 contentPadding = PaddingValues(vertical = 8.dp),
@@ -146,7 +154,11 @@ fun CartItemRow(cartItem: CartItem, cartViewModel: CartViewModel) {
                 onClick = { cartViewModel.removeItem(cartItem) },
                 modifier = Modifier.padding(start = 16.dp)
             ) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = "Ürünü Sil", tint = Color.Red)
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Ürünü Sil",
+                    tint = Color.Red
+                )
             }
         }
     }
