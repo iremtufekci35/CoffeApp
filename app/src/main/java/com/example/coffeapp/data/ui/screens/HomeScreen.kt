@@ -1,6 +1,7 @@
 package com.example.coffeapp.data.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -79,7 +80,6 @@ fun CoffeeGrid(coffees: List<CoffeeItem>, onAddToCart: (CartItem) -> Unit) {
         }
     }
 }
-
 @Composable
 fun CoffeeCard(item: CoffeeItem, onAddToCart: (CartItem) -> Unit) {
     var isFavorite by remember { mutableStateOf(false) }
@@ -96,9 +96,12 @@ fun CoffeeCard(item: CoffeeItem, onAddToCart: (CartItem) -> Unit) {
     ) {
         Box {
             Column(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Image
                 val painter = rememberAsyncImagePainter(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(item.imageRes)
@@ -116,55 +119,78 @@ fun CoffeeCard(item: CoffeeItem, onAddToCart: (CartItem) -> Unit) {
                         .clip(RoundedCornerShape(12.dp))
                 )
 
+                // Add Spacer to separate name and price from the image
                 Spacer(modifier = Modifier.height(8.dp))
 
+                // Product name
                 Text(
                     text = item.name,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
 
+                // Product price
                 Text(
                     text = "${item.price}₺",
                     color = MaterialTheme.colorScheme.primary
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Button(
-                    onClick = {
-                        val cartItem = CartItem(
-                            productName = item.name,
-                            price = item.price.toDouble(),
-                            imageRes = item.imageRes,
-                            quantity = 1
-                        )
-                        onAddToCart(cartItem)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ShoppingCart,
-                        contentDescription = "Sepete Ekle",
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Sepete Ekle")
-                }
+                Spacer(modifier = Modifier.height(8.dp)) // Add some space before the button
             }
 
-            IconButton(
-                onClick = { isFavorite = !isFavorite },
+            // Favorite Icon button
+            Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(8.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.6f))
+            ) {
+                IconButton(
+                    onClick = { isFavorite = !isFavorite },
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .size(24.dp)
+                ) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        contentDescription = "Favori",
+                        tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+
+            // Add to cart button
+            Button(
+                onClick = {
+                    val cartItem = CartItem(
+                        productName = item.name,
+                        price = item.price.toDouble(),
+                        imageRes = item.imageRes,
+                        quantity = 1
+                    )
+                    onAddToCart(cartItem)
+                },
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .padding(8.dp)
             ) {
                 Icon(
-                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                    contentDescription = "Favori",
-                    tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                    imageVector = Icons.Default.ShoppingCart,
+                    contentDescription = "Sepete Ekle",
+                    modifier = Modifier.size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Sepete Ekle",
+                    fontSize = 12.sp,
                 )
             }
         }
     }
 }
+
+
+
