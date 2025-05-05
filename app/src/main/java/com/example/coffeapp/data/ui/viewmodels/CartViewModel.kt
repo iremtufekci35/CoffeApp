@@ -73,6 +73,17 @@ class CartViewModel @Inject constructor(
             }
         }
     }
+    fun getAllItems() {
+        viewModelScope.launch {
+            try {
+                val items = appDatabaseImpl.getAllCartItems()
+                _cartItems.value = items
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
 
     fun updateQuantity(cartItem: CartItem, newQuantity: Int) {
         if (newQuantity >= 0) {

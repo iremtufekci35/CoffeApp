@@ -8,8 +8,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.coffeapp.data.local.datastore.DataStoreManager
 import com.example.coffeapp.data.ui.screens.CartScreen
 import com.example.coffeapp.data.ui.components.BottomNavItem
@@ -17,7 +19,9 @@ import com.example.coffeapp.data.ui.components.BottomNavigationBar
 import com.example.coffeapp.data.ui.screens.FavoritesScreen
 import com.example.coffeapp.data.ui.screens.HomeScreen
 import com.example.coffeapp.data.ui.screens.LoginScreen
+import com.example.coffeapp.data.ui.screens.OrderScreen
 import com.example.coffeapp.data.ui.screens.ProfileScreen
+import com.example.coffeapp.data.ui.screens.RegisterScreen
 
 @Composable
 fun MainScreen(
@@ -47,27 +51,45 @@ fun MainScreen(
             Modifier.padding(innerPadding)
         ) {
             composable("login") {
-                LoginScreen(onLoginSuccess = { user -> })
+                LoginScreen(
+                    onLoginSuccess = { user ->  },
+                    onNavigateToRegister = { navController.navigate("register") }
+                )
             }
             composable(BottomNavItem.Home.route) { HomeScreen() }
             composable(BottomNavItem.Favorites.route) { FavoritesScreen() }
-            composable(BottomNavItem.Cart.route) { CartScreen() }
+            composable(BottomNavItem.Cart.route) { CartScreen(navController) }
             composable(BottomNavItem.Account.route) {
                 ProfileScreen(
+                    navController = navController,
                     onOrdersClick = {
-                        // Navigate to Orders screen (e.g., "orders_screen")
+                        navController.navigate("order_screen/0")
                     },
                     onLogoutClick = {
-                        // Use LaunchedEffect for side effects like logout
-//                        LaunchedEffect(Unit) {
-//                            dataStoreManager.saveLoginStatus(false)  // Call the suspend function here
-//                            navController.navigate("login") {
-//                                popUpTo("login") { inclusive = true }  // Navigate back to login screen
-//                            }
-//                        }
+                        // todo logout
                     }
                 )
             }
+            composable("register") {
+                RegisterScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToHome = {
+                        navController.navigate("home") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable(
+                "order_screen/{cartId}",
+                arguments = listOf(navArgument("cartId") { type = NavType.IntType })
+            ) { backStackEntry ->
+                OrderScreen(navController)
+            }
+
         }
     }
 }

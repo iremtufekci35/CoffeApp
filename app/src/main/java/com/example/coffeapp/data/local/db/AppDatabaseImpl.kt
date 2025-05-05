@@ -1,8 +1,7 @@
 package com.example.coffeapp.data.local.db
 
 import com.example.coffeapp.data.model.CartItem
-import com.example.coffeapp.data.model.Product
-import com.example.coffeapp.data.model.User
+import com.example.coffeapp.data.model.Users
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,22 +30,9 @@ class AppDatabaseImpl(private val appDatabase: AppDatabase) {
         return appDatabase.cartDao().updateCartItem(cartItem)
     }
 
-
-    suspend fun insertProduct(product: Product) {
-        appDatabase.productDao().insertProduct(product)
-    }
-
-    suspend fun getAllProducts(): List<Product> {
-        return appDatabase.productDao().getAllProducts()
-    }
-
-    suspend fun deleteProduct(product: Product) {
-        appDatabase.productDao().deleteProduct(product)
-    }
-
-    fun insertUser(user: User) {
+    fun insertUser(users: Users) {
         CoroutineScope(Dispatchers.IO).launch {
-            appDatabase.userDao().insertUser(user)
+            appDatabase.userDao().insertUser(users)
         }
     }
 

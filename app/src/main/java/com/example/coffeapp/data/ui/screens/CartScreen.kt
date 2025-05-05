@@ -21,11 +21,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.coffeapp.data.model.CartItem
 import com.example.coffeapp.data.ui.viewmodels.CartViewModel
 
 @Composable
-fun CartScreen() {
+fun CartScreen(navController: NavController) {
     val cartViewModel: CartViewModel = hiltViewModel()
     val cartItems by cartViewModel.cartItems.observeAsState(emptyList())
 
@@ -100,6 +101,23 @@ fun CartScreen() {
                         )
                     )
                 }
+            }
+            Button(
+                onClick = {
+                    Log.d("CartScreen", "Sipariş ver butonuna tıklandı.")
+//                    val cartItemIds = cartItems.map { it.id }.joinToString(",")
+//                    navController.navigate("order_screen/${cartItemIds}")
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            ) {
+                Text(
+                    text = "Sipariş Ver",
+                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold),
+                    color = Color.White
+                )
             }
         }
     }

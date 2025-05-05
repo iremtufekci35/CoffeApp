@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.coffeapp.data.model.User
+import com.example.coffeapp.data.model.Users
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
@@ -26,7 +26,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 @Composable
 fun LoginScreen(
     loginViewModel: LoginViewModel = hiltViewModel(),
-    onLoginSuccess: (User) -> Unit
+    onLoginSuccess: (Users) -> Unit,
+    onNavigateToRegister: () -> Unit
 ) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -93,7 +94,7 @@ fun LoginScreen(
             Button(
                 onClick = {
                     isLoading = true
-                    loginViewModel.loginUser(username, password)
+//                    loginViewModel.loginUser(username, password)
                 },
                 enabled = username.isNotBlank() && password.isNotBlank() && !isLoading,
                 modifier = Modifier
@@ -126,11 +127,20 @@ fun LoginScreen(
                         .fillMaxWidth()
                 )
             }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            TextButton(
+                onClick = { onNavigateToRegister() },
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            ) {
+                Text("Hesabınız yok mu? Kayıt Ol", style = MaterialTheme.typography.bodyMedium)
+            }
         }
 
         if (loginState is LoginState.Success) {
             LaunchedEffect(Unit) {
-                onLoginSuccess((loginState as LoginState.Success).user)
+                onLoginSuccess((loginState as LoginState.Success).users)
             }
         }
     }
