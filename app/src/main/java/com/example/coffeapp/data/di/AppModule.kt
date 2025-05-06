@@ -18,7 +18,13 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
 import javax.inject.Singleton
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -31,8 +37,12 @@ object AppModule {
             app,
             AppDatabase::class.java,
             "coffee_shop_db"
-        ).fallbackToDestructiveMigration().addMigrations(MIGRATION_1_3).build()
+        )
+            .fallbackToDestructiveMigration()
+            .addMigrations(MIGRATION_1_3)
+            .build()
     }
+
     val MIGRATION_1_3 = object : Migration(1, 3) {
         override fun migrate(database: SupportSQLiteDatabase) {
             database.execSQL("ALTER TABLE CartItem ADD COLUMN discount REAL NOT NULL DEFAULT 0.0")
@@ -62,8 +72,11 @@ object AppModule {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
+
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            .sslSocketFactory(createInsecureSocketFactory(), createInsecureTrustManager())
+            .hostnameVerifier { _, _ -> true }
             .build()
     }
 
@@ -76,6 +89,19 @@ object AppModule {
             .build()
             .create(ApiService::class.java)
     }
+
+    private fun createInsecureSocketFactory(): SSLSocketFactory {
+        val trustAllCerts = arrayOf<TrustManager>(createInsecureTrustManager())
+        val sc = SSLContext.getInstance("TLS")
+        sc.init(null, trustAllCerts, SecureRandom())
+        return sc.socketFactory
+    }
+
+    private fun createInsecureTrustManager(): X509TrustManager {
+        return object : X509TrustManager {
+            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
+            override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {}
+            override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {}
+        }
+    }
 }
-
-
