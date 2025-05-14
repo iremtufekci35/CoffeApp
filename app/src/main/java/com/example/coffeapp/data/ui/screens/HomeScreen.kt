@@ -27,13 +27,21 @@ import com.example.coffeapp.data.model.CartItem
 import com.example.coffeapp.data.model.CoffeeItem
 import com.example.coffeapp.data.ui.viewmodels.CartViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.coffeapp.data.local.datastore.DataStoreManager
+import com.example.coffeapp.data.ui.viewmodels.FavoriteViewModel
+import com.example.coffeapp.data.ui.viewmodels.HomeViewModel
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    dataStoreManager: DataStoreManager) {
+    val isLoggedIn by homeViewModel.isLoggedIn.collectAsState(initial = false)
+//    val userId by homeViewModel.userId.collectAsState(initial = 0)
+    val userId by dataStoreManager.userId.collectAsState(initial = 0)
+
     val tabs = listOf("Sıcak", "Soğuk")
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val cartViewModel: CartViewModel = hiltViewModel()
-
     val hotCoffees = listOf(
         CoffeeItem("Latte", "40", "https://images.unsplash.com/photo-1511920170033-f8396924c348"),
         CoffeeItem("Espresso", "30", "https://images.unsplash.com/photo-1587732440609-1965a3a5c7b2"),
@@ -46,8 +54,16 @@ fun HomeScreen() {
     )
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
+        if (isLoggedIn) {
+            Text("Hoş geldiniz! Kullanıcı ID: $userId")
+        } else {
+            Text("Lütfen giriş yapın.")
+        }
+
         ScrollableTabRow(selectedTabIndex = selectedTabIndex) {
             tabs.forEachIndexed { index, title ->
                 Tab(
@@ -61,9 +77,10 @@ fun HomeScreen() {
         Spacer(modifier = Modifier.height(16.dp))
 
         val coffeeList = if (selectedTabIndex == 0) hotCoffees else coldCoffees
-        CoffeeGrid(coffees = coffeeList, onAddToCart = { cartItem -> cartViewModel.insertCartItem(cartItem) })
+        CoffeeGrid(coffees = coffeeList, onAddToCart = { cartItem -> cartViewModel.insertCartItem(cartItem,userId) })
     }
 }
+
 
 @Composable
 fun CoffeeGrid(coffees: List<CoffeeItem>, onAddToCart: (CartItem) -> Unit) {
@@ -84,6 +101,12 @@ fun CoffeeGrid(coffees: List<CoffeeItem>, onAddToCart: (CartItem) -> Unit) {
 @Composable
 fun CoffeeCard(item: CoffeeItem, onAddToCart: (CartItem) -> Unit) {
     var isFavorite by remember { mutableStateOf(false) }
+
+    val favoriteViewModel: FavoriteViewModel = hiltViewModel()
+    val homeViewModel: HomeViewModel = hiltViewModel()
+
+    val isLoggedIn by homeViewModel.isLoggedIn.collectAsState(initial = false)
+    val userId by homeViewModel.userId.collectAsState(initial = 0)
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -142,14 +165,17 @@ fun CoffeeCard(item: CoffeeItem, onAddToCart: (CartItem) -> Unit) {
                 Button(
                     onClick = {
                         val cartItem = CartItem(
-                            productName = item.name,
+                            itemName = item.name,
                             price = item.price.toDouble(),
                             imageRes = item.imageRes,
-                            quantity = 1
+                            quantity = 1,
+                            userId = userId
                         )
                         onAddToCart(cartItem)
                     },
-                    modifier = Modifier.fillMaxWidth().height(48.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.ShoppingCart,
@@ -172,7 +198,12 @@ fun CoffeeCard(item: CoffeeItem, onAddToCart: (CartItem) -> Unit) {
                     )
             ) {
                 IconButton(
-                    onClick = { isFavorite = !isFavorite },
+                    onClick = {
+                        isFavorite = !isFavorite
+                        if (isFavorite && isLoggedIn) {
+                            favoriteViewModel.addItemToFav(userId, item.name)
+                        }
+                    },
                     modifier = Modifier
                         .size(24.dp)
                         .padding(0.dp)

@@ -1,10 +1,12 @@
 package com.example.coffeapp.data.di
 
 import android.app.Application
+import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.coffeapp.data.api.ApiService
+import com.example.coffeapp.data.local.datastore.DataStoreManager
 import com.example.coffeapp.data.local.db.AppDatabase
 import com.example.coffeapp.data.local.db.AppDatabaseImpl
 import com.example.coffeapp.data.local.db.dao.CartDao
@@ -13,6 +15,7 @@ import com.example.coffeapp.data.utils.Constants.Companion.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -53,6 +56,12 @@ object AppModule {
     @Singleton
     fun provideAppDatabaseImpl(appDatabase: AppDatabase): AppDatabaseImpl {
         return AppDatabaseImpl(appDatabase)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataStoreManager(@ApplicationContext context: Context) : DataStoreManager {
+        return DataStoreManager(context)
     }
 
     @Provides

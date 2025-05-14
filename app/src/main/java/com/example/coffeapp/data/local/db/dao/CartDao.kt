@@ -12,7 +12,7 @@ interface CartDao {
     @Delete
     suspend fun deleteCartItem(cartItem: CartItem) : Int
 
-    @Query("SELECT * FROM cart_item WHERE productName = :name LIMIT 1")
+    @Query("SELECT * FROM cart_item WHERE itemName = :name LIMIT 1")
     suspend fun getCartItemByProductName(name: String): CartItem?
 
     @Query("SELECT * FROM cart_item")

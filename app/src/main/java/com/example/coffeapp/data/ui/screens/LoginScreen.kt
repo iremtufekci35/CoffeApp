@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.coffeapp.data.model.Users
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
@@ -21,12 +20,13 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.VisualTransformation
+import com.example.coffeapp.data.model.response.LoginResponse
 
 
 @Composable
 fun LoginScreen(
     loginViewModel: LoginViewModel = hiltViewModel(),
-    onLoginSuccess: (Users) -> Unit,
+    onLoginSuccess: (LoginResponse) -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
     var username by remember { mutableStateOf("") }
@@ -34,6 +34,14 @@ fun LoginScreen(
     var passwordVisible by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
     val loginState by loginViewModel.loginState.observeAsState()
+
+    LaunchedEffect(loginState) {
+        isLoading = loginState is LoginState.Loading
+        val successState = loginState as? LoginState.Success
+        if (successState != null) {
+            onLoginSuccess(successState.response)
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -73,7 +81,7 @@ fun LoginScreen(
                 value = password,
                 onValueChange = { password = it },
                 label = { Text("Şifre") },
-                placeholder = { Text("şifrenizi girin") },
+                placeholder = { Text("Şifrenizi girin") },
                 leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
                 trailingIcon = {
                     val icon = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
@@ -94,7 +102,7 @@ fun LoginScreen(
             Button(
                 onClick = {
                     isLoading = true
-//                    loginViewModel.loginUser(username, password)
+                    loginViewModel.loginUser(username, password)
                 },
                 enabled = username.isNotBlank() && password.isNotBlank() && !isLoading,
                 modifier = Modifier
@@ -113,9 +121,9 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            if (isLoading) {
-                CircularProgressIndicator()
-            }
+//            if (isLoading) {
+//                CircularProgressIndicator()
+//            }
 
             AnimatedVisibility(visible = loginState is LoginState.Error) {
                 Text(
@@ -135,12 +143,6 @@ fun LoginScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 Text("Hesabınız yok mu? Kayıt Ol", style = MaterialTheme.typography.bodyMedium)
-            }
-        }
-
-        if (loginState is LoginState.Success) {
-            LaunchedEffect(Unit) {
-                onLoginSuccess((loginState as LoginState.Success).users)
             }
         }
     }

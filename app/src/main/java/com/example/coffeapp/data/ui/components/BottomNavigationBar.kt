@@ -3,7 +3,6 @@ package com.example.coffeapp.data.ui.components
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -23,8 +22,7 @@ fun BottomNavigationBar(navController: NavHostController) {
 
         items.forEach { item ->
             BottomNavigationItem(
-                icon = { Icon(item.icon, contentDescription = item.title) },
-                label = { Text(item.title) },
+                icon = { Icon(imageVector = item.icon, contentDescription = item.route) },
                 selected = currentDestination?.route == item.route,
                 onClick = {
                     navController.navigate(item.route) {

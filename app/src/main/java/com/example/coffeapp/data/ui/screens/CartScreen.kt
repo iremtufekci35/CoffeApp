@@ -21,17 +21,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.example.coffeapp.data.model.CartItem
 import com.example.coffeapp.data.ui.viewmodels.CartViewModel
 
 @Composable
-fun CartScreen(navController: NavController) {
+fun CartScreen(userId:Int) {
     val cartViewModel: CartViewModel = hiltViewModel()
     val cartItems by cartViewModel.cartItems.observeAsState(emptyList())
 
     LaunchedEffect(Unit) {
-        cartViewModel.loadCartItems()
+        cartViewModel.fetchCartItems(userId)
     }
 
     val totalPrice = cartItems.sumOf { it.price * it.quantity }
@@ -40,84 +39,82 @@ fun CartScreen(navController: NavController) {
         Log.d("CartScreen", "Toplam fiyat hesaplandı: ₺${"%.2f".format(totalPrice)}")
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        contentPadding = PaddingValues(vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(
-            text = "Sepetim",
-            style = TextStyle(fontSize = 26.sp, fontWeight = FontWeight.Bold),
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        if (cartItems.isEmpty()) {
+        item {
             Text(
-                "Sepetiniz boş.",
-                style = TextStyle(fontSize = 18.sp, fontStyle = FontStyle.Italic),
-                color = Color.Gray
+                text = "Sepetim",
+                style = TextStyle(fontSize = 26.sp, fontWeight = FontWeight.Bold),
+                modifier = Modifier.padding(bottom = 16.dp)
             )
-        } else {
-            LazyColumn(
-                contentPadding = PaddingValues(vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(cartItems, key = { it.id }) { cartItem ->
-                    CartItemRow(cartItem = cartItem, cartViewModel = cartViewModel)
-                }
-            }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        if (cartItems.isEmpty()) {
+            item {
+                Text(
+                    "Sepetiniz boş.",
+                    style = TextStyle(fontSize = 18.sp, fontStyle = FontStyle.Italic),
+                    color = Color.Gray
+                )
+            }
+        } else {
+            items(cartItems, key = { it.id }) { cartItem ->
+                CartItemRow(cartItem = cartItem, cartViewModel = cartViewModel)
+            }
 
-        if (cartItems.isNotEmpty()) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Row(
+            item {
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(vertical = 8.dp),
+                    shape = MaterialTheme.shapes.medium
                 ) {
-                    Text(
-                        text = "Toplam:",
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Gray
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Toplam:",
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Gray
+                            )
                         )
-                    )
-                    Text(
-                        text = "₺${"%.2f".format(totalPrice)}",
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
+                        Text(
+                            text = "₺${"%.2f".format(totalPrice)}",
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
                         )
-                    )
+                    }
                 }
             }
-            Button(
-                onClick = {
-                    Log.d("CartScreen", "Sipariş ver butonuna tıklandı.")
-//                    val cartItemIds = cartItems.map { it.id }.joinToString(",")
-//                    navController.navigate("order_screen/${cartItemIds}")
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-            ) {
-                Text(
-                    text = "Sipariş Ver",
-                    style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold),
-                    color = Color.White
-                )
+
+            item {
+                Button(
+                    onClick = {
+                        Log.d("CartScreen", "Sipariş ver butonuna tıklandı.")
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(
+                        text = "Sipariş Ver",
+                        style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold),
+                        color = Color.White
+                    )
+                }
             }
         }
     }
@@ -136,7 +133,7 @@ fun CartItemRow(cartItem: CartItem, cartViewModel: CartViewModel) {
         Row(modifier = Modifier.padding(16.dp)) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = cartItem.productName,
+                    text = cartItem.itemName,
                     style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -169,7 +166,9 @@ fun CartItemRow(cartItem: CartItem, cartViewModel: CartViewModel) {
             }
 
             IconButton(
-                onClick = { cartViewModel.removeItem(cartItem) },
+                onClick = {
+//                    cartViewModel.removeItem(cartItem)
+                          },
                 modifier = Modifier.padding(start = 16.dp)
             ) {
                 Icon(

@@ -1,5 +1,6 @@
 package com.example.coffeapp.data.ui.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -22,7 +23,6 @@ class RegisterViewModel @Inject constructor(
     val registerState: LiveData<RegisterState> = _registerState
 
     fun registerUser(user: User) {
-        println("KAYIT BASLADI")
         viewModelScope.launch {
             try {
                 _registerState.value = RegisterState.Loading
@@ -30,14 +30,14 @@ class RegisterViewModel @Inject constructor(
                     apiService.register(user)
                 }
                 if (response.isSuccessful) {
-                    println("KAYIT BASARILI")
+                    Log.i("RegisterViewModel","user registered successfully")
                     _registerState.value = RegisterState.Success
                 } else {
-                    println("KAYIT BASARISIZ: ${response.message()}")
+                    Log.e("RegisterViewModel","user register unsuccessfull")
                     _registerState.value = RegisterState.Error("Kayıt başarısız: ${response.message()}")
                 }
             } catch (e: Exception) {
-                println("Error during registration: ${e.localizedMessage}")
+                Log.e("RegisterViewModel","Error during registration: ${e.localizedMessage}")
                 _registerState.value = RegisterState.Error("Hata: ${e.localizedMessage}")
             }
         }

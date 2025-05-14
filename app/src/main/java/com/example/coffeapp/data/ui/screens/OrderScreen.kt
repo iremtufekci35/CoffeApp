@@ -11,16 +11,17 @@ import com.example.coffeapp.data.model.CartItem
 import com.example.coffeapp.data.ui.viewmodels.CartViewModel
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.coffeapp.data.local.datastore.DataStoreManager
 import com.example.coffeapp.data.ui.components.BottomNavItem
 
 @Composable
-fun OrderScreen(navController: NavController) {
+fun OrderScreen(navController: NavController,dataStoreManager: DataStoreManager) {
     val cartViewModel: CartViewModel = hiltViewModel()
-
+    val userId by dataStoreManager.userId.collectAsState(initial = 0)
     var cartItems by remember { mutableStateOf<List<CartItem>>(emptyList()) }
 
     LaunchedEffect(Unit) {
-        cartViewModel.getAllItems()
+        cartViewModel.loadCartItems(userId)
         cartItems = cartViewModel.cartItems.value ?: emptyList()
     }
 
@@ -46,7 +47,7 @@ fun OrderScreen(navController: NavController) {
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            text = cartItem.productName,
+                            text = cartItem.itemName,
                             style = MaterialTheme.typography.titleMedium,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
