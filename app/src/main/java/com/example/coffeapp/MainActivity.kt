@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.compose.rememberNavController
 import com.example.coffeapp.data.local.datastore.DataStoreManager
 import com.example.coffeapp.data.local.db.AppDatabaseImpl
+import com.example.coffeapp.data.ui.theme.CoffeeAppTheme
 import com.example.coffeapp.data.ui.MainScreen
 import com.example.coffeapp.data.ui.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,8 +28,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
+            CoffeeAppTheme {
+                MainScreen(navController = navController, dataStoreManager = dataStoreManager, homeViewModel = homeViewModel)
 
-            MainScreen(navController = navController, dataStoreManager = dataStoreManager, homeViewModel = homeViewModel)
+            }
         }
     }
 }

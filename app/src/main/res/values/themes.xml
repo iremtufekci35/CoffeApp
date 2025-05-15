@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <style name="Theme.CoffeApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/lavender</item>
-        <item name="colorPrimaryVariant">@color/deepLavender</item>
+        <item name="colorPrimary">@color/dark_brown</item>
         <item name="colorOnPrimary">@color/white</item>
-        <item name="android:windowBackground">@color/lightLavender</item>
-        <item name="colorAccent">@color/vividPink</item>
+        <item name="android:windowBackground">@color/beige</item>
+        <item name="colorSecondary">@color/light_brown</item>
     </style>
-
 </resources>

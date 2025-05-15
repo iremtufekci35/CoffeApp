@@ -15,13 +15,13 @@ import com.example.coffeapp.data.local.datastore.DataStoreManager
 import com.example.coffeapp.data.ui.components.BottomNavItem
 
 @Composable
-fun OrderScreen(navController: NavController,dataStoreManager: DataStoreManager) {
+fun OrderScreen(navController: NavController, userId:Int) {
     val cartViewModel: CartViewModel = hiltViewModel()
-    val userId by dataStoreManager.userId.collectAsState(initial = 0)
     var cartItems by remember { mutableStateOf<List<CartItem>>(emptyList()) }
 
     LaunchedEffect(Unit) {
-        cartViewModel.loadCartItems(userId)
+//        cartViewModel.loadCartItems(userId)
+        cartViewModel.fetchOrders(userId)
         cartItems = cartViewModel.cartItems.value ?: emptyList()
     }
 
@@ -74,7 +74,7 @@ fun OrderScreen(navController: NavController,dataStoreManager: DataStoreManager)
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Your cart is empty.",
+                    text = "Siparişiniz Yok.",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(16.dp)
@@ -89,7 +89,7 @@ fun OrderScreen(navController: NavController,dataStoreManager: DataStoreManager)
                         },
                     modifier = Modifier.padding(top = 16.dp)
                 ) {
-                    Text(text = "Start Shopping")
+                    Text(text = "Alışverişe Başla")
                 }
             }
         }

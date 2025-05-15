@@ -1,12 +1,15 @@
 package com.example.coffeapp.data.api
 
 import com.example.coffeapp.data.model.CartItem
+import com.example.coffeapp.data.model.CreateOrderRequest
 import com.example.coffeapp.data.model.Favorite
+import com.example.coffeapp.data.model.GetOrdersResponse
 import com.example.coffeapp.data.model.User
 import com.example.coffeapp.data.model.response.BasketResponse
 import com.example.coffeapp.data.model.response.BasketResponseWrapper
 import com.example.coffeapp.data.model.response.FavoriteResponse
 import com.example.coffeapp.data.model.response.LoginResponse
+import com.example.coffeapp.data.model.response.OrderResponse
 import com.example.coffeapp.data.model.response.RegisterResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -27,6 +30,12 @@ interface ApiService {
 
      @POST("basket/add")
      suspend fun addToBasket(@Body cartItem: CartItem): Response<BasketResponse>
+
+     @POST("order")
+     suspend fun createOrder(@Body orderRequest: CreateOrderRequest): Response<OrderResponse>
+
+     @GET("order/{userId}")
+     suspend fun getOrder(@Path("userId") userId: Int): Response<GetOrdersResponse>
 
      @GET("favorites/{userId}")
      suspend fun getFavorites(@Path("userId") userId: Int): Response<FavoriteResponse>

@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
@@ -81,7 +82,7 @@ fun ProfileMenuItem(title: String, onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable { onClick() }
             .padding(vertical = 12.dp)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(Color(0xFFB29982))
             .padding(horizontal = 12.dp, vertical = 10.dp)
             .clip(MaterialTheme.shapes.medium),
         horizontalArrangement = Arrangement.SpaceBetween

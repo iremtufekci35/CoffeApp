@@ -115,7 +115,7 @@ fun CoffeeCard(item: CoffeeItem, onAddToCart: (CartItem) -> Unit) {
             .fillMaxWidth()
             .wrapContentHeight(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
+            containerColor = MaterialTheme.colorScheme.onPrimary
         )
     ) {
         Box(

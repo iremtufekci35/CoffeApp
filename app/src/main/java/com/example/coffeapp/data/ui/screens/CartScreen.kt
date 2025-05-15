@@ -21,11 +21,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.example.coffeapp.data.model.CartItem
+import com.example.coffeapp.data.ui.components.BottomNavItem
 import com.example.coffeapp.data.ui.viewmodels.CartViewModel
 
 @Composable
-fun CartScreen(userId:Int) {
+fun CartScreen(userId:Int, navController: NavController) {
     val cartViewModel: CartViewModel = hiltViewModel()
     val cartItems by cartViewModel.cartItems.observeAsState(emptyList())
 
@@ -102,7 +104,16 @@ fun CartScreen(userId:Int) {
             item {
                 Button(
                     onClick = {
-                        Log.d("CartScreen", "Sipariş ver butonuna tıklandı.")
+                        cartViewModel.createOrder(
+                            userId = userId,
+                            items = cartItems,
+                            onSuccess = {
+                                    navController.navigate(BottomNavItem.Home.route)
+                            },
+                            onError = { error ->
+                                println("on error")
+                            }
+                        )
                     },
                     modifier = Modifier
                         .fillMaxWidth()

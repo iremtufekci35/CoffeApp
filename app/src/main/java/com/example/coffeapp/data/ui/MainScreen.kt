@@ -102,7 +102,7 @@ fun MainScreen(
             }
             composable(BottomNavItem.Home.route) { HomeScreen(dataStoreManager = dataStoreManager) }
             composable(BottomNavItem.Favorites.route) { FavoritesScreen(userId = userId) }
-            composable(BottomNavItem.Cart.route) { CartScreen(userId=userId) }
+            composable(BottomNavItem.Cart.route) { CartScreen(userId=userId,navController) }
             composable(BottomNavItem.Account.route) {
                 ProfileScreen(
                     navController = navController,
@@ -131,7 +131,7 @@ fun MainScreen(
                 "order_screen/{cartId}",
                 arguments = listOf(navArgument("cartId") { type = NavType.IntType })
             ) { backStackEntry ->
-                OrderScreen(navController,dataStoreManager)
+                OrderScreen(navController,userId)
             }
         }
     }
