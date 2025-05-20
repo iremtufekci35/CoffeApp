@@ -43,14 +43,14 @@ fun HomeScreen(
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val cartViewModel: CartViewModel = hiltViewModel()
     val hotCoffees = listOf(
-        CoffeeItem("Latte", "40", "https://images.unsplash.com/photo-1511920170033-f8396924c348"),
-        CoffeeItem("Espresso", "30", "https://images.unsplash.com/photo-1587732440609-1965a3a5c7b2"),
-        CoffeeItem("Cappuccino", "35", "https://images.unsplash.com/photo-1527168020762-3f3b5d2f3c91")
+        CoffeeItem(1,"Latte", "40", "https://images.unsplash.com/photo-1511920170033-f8396924c348"),
+        CoffeeItem(2,"Espresso", "30", "https://images.unsplash.com/photo-1587732440609-1965a3a5c7b2"),
+        CoffeeItem(3,"Cappuccino", "35", "https://images.unsplash.com/photo-1527168020762-3f3b5d2f3c91")
     )
 
     val coldCoffees = listOf(
-        CoffeeItem("Mocha", "42", "https://images.unsplash.com/photo-1524592321522-6a9f7e640420"),
-        CoffeeItem("Americano", "33", "https://images.unsplash.com/photo-1605478201968-38f3be0349a1")
+        CoffeeItem(4,"Mocha", "42", "https://images.unsplash.com/photo-1524592321522-6a9f7e640420"),
+        CoffeeItem(5,"Americano", "33", "https://images.unsplash.com/photo-1605478201968-38f3be0349a1")
     )
 
     Column(
@@ -201,7 +201,7 @@ fun CoffeeCard(item: CoffeeItem, onAddToCart: (CartItem) -> Unit) {
                     onClick = {
                         isFavorite = !isFavorite
                         if (isFavorite && isLoggedIn) {
-                            favoriteViewModel.addItemToFav(userId, item.name)
+                            favoriteViewModel.addItemToFav(item.id, userId, item.name)
                         }
                     },
                     modifier = Modifier

@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.coffeapp.data.ui.viewmodels.FavoriteViewModel
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesScreen(
@@ -46,11 +45,22 @@ fun FavoritesScreen(
                     .padding(innerPadding),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Henüz favori öğe yok",
-                    fontSize = 16.sp,
-                    color = Color.Gray
-                )
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        tint = Color.LightGray.copy(alpha = 0.5f),
+                        modifier = Modifier.size(64.dp)
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "Henüz favori öğe yok",
+                        fontSize = 18.sp,
+                        color = Color.Gray
+                    )
+                }
             }
         } else {
             LazyColumn(
@@ -73,8 +83,9 @@ fun FavoriteItemCard(itemName: String?) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
+        shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
-        elevation = CardDefaults.cardElevation(4.dp)
+        elevation = CardDefaults.cardElevation(6.dp)
     ) {
         Row(
             modifier = Modifier
@@ -85,13 +96,16 @@ fun FavoriteItemCard(itemName: String?) {
             Icon(
                 imageVector = Icons.Default.Star,
                 contentDescription = "Favorite Icon",
-                tint = MaterialTheme.colorScheme.primary
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(28.dp)
             )
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = itemName ?: "Bilinmeyen İçecek",
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.weight(1f)
             )
+
         }
     }
 }

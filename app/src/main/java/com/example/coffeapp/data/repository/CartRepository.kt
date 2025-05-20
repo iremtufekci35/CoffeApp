@@ -80,7 +80,7 @@ class CartRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true) {
                 true
             } else {
-                Log.e("CartRepository", "Order API failed: ${response.code()} - ${response.body()?.message}")
+                Log.e("CartRepository", "Order API failed: ${response.code()} - ${response.body()?.success}")
                 false
             }
         } catch (e: Exception) {
@@ -100,6 +100,16 @@ class CartRepository @Inject constructor(
         } catch (e: Exception) {
             Log.e("CartRepository", "Get Order API exception", e)
             emptyList()
+        }
+    }
+    suspend fun clearCart(userId: Int) {
+        try {
+            val response = apiService.clearCart(userId)
+            if (!response.isSuccessful) {
+                Log.e("CartRepository", "Clear Cart API failed: ${response.code()}")
+            }
+        } catch (e: Exception) {
+            Log.e("CartRepository", "Clear Cart API exception", e)
         }
     }
 }

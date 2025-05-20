@@ -18,10 +18,10 @@ class FavoriteViewModel @Inject constructor(private val apiService: ApiService) 
     private val _favoriteList = MutableLiveData<List<Favorite>>()
     val favoriteList: LiveData<List<Favorite>> get() = _favoriteList
 
-    fun addItemToFav(id: Int,itemName: String){
+    fun addItemToFav(id: Int,userId: Int, itemName: String){
         viewModelScope.launch {
             try {
-                val response = apiService.addToFavorites(Favorite(id,itemName))
+                val response = apiService.addToFavorites(Favorite(id,userId,itemName))
                 val responseCode = response.code()
                 if (response.isSuccessful && response.body() != null) {
                     _favoriteState.value = FavoriteState.Success
@@ -40,6 +40,20 @@ class FavoriteViewModel @Inject constructor(private val apiService: ApiService) 
                 val response = apiService.getFavorites(userId)
                 if (response.isSuccessful && response.body()?.success == true) {
                     _favoriteList.postValue(response.body()?.favorites ?: emptyList())
+                } else {
+                    // API başarısızsa logla veya hata ver
+                }
+            } catch (e: Exception) {
+                // Hata yönetimi
+            }
+        }
+    }
+    fun clearFavorites(userId: Int) {
+        viewModelScope.launch {
+            try {
+                val response = apiService.clearFavorites(userId)
+                if (response.isSuccessful) {
+                    _favoriteList.postValue(emptyList())
                 } else {
                     // API başarısızsa logla veya hata ver
                 }

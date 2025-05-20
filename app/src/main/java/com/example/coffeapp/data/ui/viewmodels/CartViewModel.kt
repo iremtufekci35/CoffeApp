@@ -20,7 +20,7 @@ class CartViewModel @Inject constructor(
     val cartItems: LiveData<List<CartItem>> get() = _cartItems
 
     private val _orders = MutableLiveData<List<Order>>()
-    val orders: LiveData<List<Order>> get() = _orders
+    val orders: LiveData<List<Order>> = _orders
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
@@ -31,32 +31,28 @@ class CartViewModel @Inject constructor(
             _cartItems.postValue(items)
         }
     }
+
     fun fetchCartItems(userId: Int) {
         viewModelScope.launch {
             val items = cartRepository.fetchCartFromApi(userId)
             _cartItems.postValue(items)
         }
     }
-    fun insertCartItem(cartItem: CartItem,userId: Int) {
+
+    fun insertCartItem(cartItem: CartItem, userId: Int) {
         viewModelScope.launch {
             cartRepository.insertCartItem(cartItem)
             fetchCartItems(userId)
         }
     }
-//
-//    fun removeItem(cartItem: CartItem) {
-//        viewModelScope.launch {
-//            cartRepository.deleteCartItem(cartItem)
-//            loadCartItems()
-//        }
-//    }
-//
-//    fun clearCart() {
-//        viewModelScope.launch {
-//            cartRepository.clearCart()
-//            _cartItems.postValue(emptyList())
-//        }
-//    }
+
+    fun clearCart(userId: Int) {
+        viewModelScope.launch {
+            cartRepository.clearCart(userId)
+            _cartItems.postValue(emptyList())
+        }
+    }
+
 
     fun updateQuantity(cartItem: CartItem, newQuantity: Int) {
         if (newQuantity >= 0) {
@@ -66,7 +62,13 @@ class CartViewModel @Inject constructor(
             _cartItems.value = updatedItems
         }
     }
-    fun createOrder(userId: Int, items: List<CartItem>, onSuccess: () -> Unit, onError: (String) -> Unit) {
+
+    fun createOrder(
+        userId: Int,
+        items: List<CartItem>,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
         viewModelScope.launch {
             val success = cartRepository.submitOrder(userId, items)
             if (success) {
@@ -76,9 +78,11 @@ class CartViewModel @Inject constructor(
             }
         }
     }
+
     fun fetchOrders(userId: Int) {
         viewModelScope.launch {
             val orders = cartRepository.getOrder(userId)
+            println("orders:$orders")
             if (orders.isNotEmpty()) {
                 _orders.postValue(orders)
             } else {

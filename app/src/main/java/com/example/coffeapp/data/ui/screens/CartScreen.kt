@@ -109,6 +109,8 @@ fun CartScreen(userId:Int, navController: NavController) {
                             items = cartItems,
                             onSuccess = {
                                     navController.navigate(BottomNavItem.Home.route)
+                                    cartViewModel.clearCart(userId)
+
                             },
                             onError = { error ->
                                 println("on error")
@@ -139,7 +141,8 @@ fun CartItemRow(cartItem: CartItem, cartViewModel: CartViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        shape = MaterialTheme.shapes.medium
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFFFE4C4))
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
             Column(modifier = Modifier.weight(1f)) {
