@@ -9,6 +9,7 @@ import com.example.coffeapp.data.local.datastore.DataStoreManager
 import com.example.coffeapp.data.local.db.AppDatabaseImpl
 import com.example.coffeapp.data.ui.theme.CoffeeAppTheme
 import com.example.coffeapp.data.ui.MainScreen
+import com.example.coffeapp.data.ui.viewmodels.FavoriteViewModel
 import com.example.coffeapp.data.ui.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -23,9 +24,17 @@ class MainActivity : AppCompatActivity() {
     lateinit var appDatabase: AppDatabaseImpl
 
     private val homeViewModel: HomeViewModel by viewModels()
+    private val favoriteViewModel: FavoriteViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        lifecycleScope.launch {
+//            // userId değerini DataStore'dan oku
+//            dataStoreManager.userId.collect { userId ->
+//                // ViewModel'e gönder
+//                favoriteViewModel.clearFavorites(userId)
+//            }
+//        }
         setContent {
             val navController = rememberNavController()
             CoffeeAppTheme {

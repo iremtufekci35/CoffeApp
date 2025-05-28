@@ -48,6 +48,22 @@ class FavoriteViewModel @Inject constructor(private val apiService: ApiService) 
             }
         }
     }
+
+    suspend fun isFavorite(userId: Int, itemId: Int): Boolean {
+        val response = apiService.isFavorite(userId, itemId)
+        return response.isSuccessful && response.body()?.isFavorite == true
+    }
+
+    suspend fun deleteItemFavorites(userId: Int, itemId: Int): Boolean {
+        return try {
+            val response = apiService.deleteFromFavorites(userId, itemId)
+            response.isSuccessful
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
     fun clearFavorites(userId: Int) {
         viewModelScope.launch {
             try {

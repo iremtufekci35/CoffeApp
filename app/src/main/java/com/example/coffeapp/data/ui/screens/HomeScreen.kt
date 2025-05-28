@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.coffeapp.data.local.datastore.DataStoreManager
 import com.example.coffeapp.data.ui.viewmodels.FavoriteViewModel
 import com.example.coffeapp.data.ui.viewmodels.HomeViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -100,13 +101,18 @@ fun CoffeeGrid(coffees: List<CoffeeItem>, onAddToCart: (CartItem) -> Unit) {
 }
 @Composable
 fun CoffeeCard(item: CoffeeItem, onAddToCart: (CartItem) -> Unit) {
-    var isFavorite by remember { mutableStateOf(false) }
-
     val favoriteViewModel: FavoriteViewModel = hiltViewModel()
     val homeViewModel: HomeViewModel = hiltViewModel()
 
     val isLoggedIn by homeViewModel.isLoggedIn.collectAsState(initial = false)
     val userId by homeViewModel.userId.collectAsState(initial = 0)
+    var isFavorite by remember { mutableStateOf(false) }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(userId, item.id) {
+        isFavorite = favoriteViewModel.isFavorite(userId, item.id)
+    }
 
     Card(
         shape = RoundedCornerShape(16.dp),
@@ -175,7 +181,9 @@ fun CoffeeCard(item: CoffeeItem, onAddToCart: (CartItem) -> Unit) {
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(48.dp)
+                        .height(36.dp),
+                        contentPadding = PaddingValues(horizontal = 4.dp)
+
                 ) {
                     Icon(
                         imageVector = Icons.Default.ShoppingCart,
@@ -200,8 +208,14 @@ fun CoffeeCard(item: CoffeeItem, onAddToCart: (CartItem) -> Unit) {
                 IconButton(
                     onClick = {
                         isFavorite = !isFavorite
-                        if (isFavorite && isLoggedIn) {
-                            favoriteViewModel.addItemToFav(item.id, userId, item.name)
+                        if (isLoggedIn) {
+                            if (isFavorite) {
+                                favoriteViewModel.addItemToFav(item.id, userId, item.name)
+                            } else {
+                                coroutineScope.launch {
+                                    favoriteViewModel.deleteItemFavorites(userId,item.id)
+                                }
+                            }
                         }
                     },
                     modifier = Modifier

@@ -7,3 +7,6 @@ data class FavoriteResponse(
     val message: String? = null,
     val favorites: List<Favorite>
 )
+data class IsFavoriteResponse(
+    val isFavorite: Boolean
+)

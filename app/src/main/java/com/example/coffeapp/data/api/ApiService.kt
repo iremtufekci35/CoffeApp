@@ -9,6 +9,7 @@ import com.example.coffeapp.data.model.User
 import com.example.coffeapp.data.model.response.BasketResponse
 import com.example.coffeapp.data.model.response.BasketResponseWrapper
 import com.example.coffeapp.data.model.response.FavoriteResponse
+import com.example.coffeapp.data.model.response.IsFavoriteResponse
 import com.example.coffeapp.data.model.response.LoginResponse
 import com.example.coffeapp.data.model.response.RegisterResponse
 import retrofit2.Response
@@ -40,6 +41,9 @@ interface ApiService {
      @GET("favorites/{userId}")
      suspend fun getFavorites(@Path("userId") userId: Int): Response<FavoriteResponse>
 
+     @GET("favorites/{userId}/{itemId}")
+     suspend fun isFavorite(@Path("userId") userId: Int, @Path("itemId") itemId: Int): Response<IsFavoriteResponse>
+
      @GET("basket/{userId}")
      suspend fun getBasket(@Path("userId") userId: Int): Response<BasketResponseWrapper>
 
@@ -48,6 +52,9 @@ interface ApiService {
 
      @DELETE("basket/clear/{userId}")
      suspend fun clearCart(@Path("userId") userId: Int): Response<Unit>
+
+     @DELETE("favorites/{userId}/{itemId}")
+     suspend fun deleteFromFavorites(@Path("userId") userId: Int, @Path("itemId") itemId: Int): Response<IsFavoriteResponse>
 
      @DELETE("favorites/clear/{userId}")
      suspend fun clearFavorites(@Path("userId") userId: Int): Response<Unit>

@@ -14,8 +14,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.coffeapp.data.ui.theme.CoffeeAppTheme
 import com.example.coffeapp.data.ui.viewmodels.FavoriteViewModel
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun FavoritesScreen(
     userId: Int,
@@ -27,50 +28,50 @@ fun FavoritesScreen(
         viewModel.getFavorites(userId)
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Favoriler") },
-                colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = Color.White
-                )
+    Scaffold { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            Text(
+                text = "Favorilerim",
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.padding(bottom = 12.dp)
             )
-        }
-    ) { innerPadding ->
-        if (favoriteList.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+
+            if (favoriteList.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Star,
-                        contentDescription = null,
-                        tint = Color.LightGray.copy(alpha = 0.5f),
-                        modifier = Modifier.size(64.dp)
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "Henüz favori öğe yok",
-                        fontSize = 18.sp,
-                        color = Color.Gray
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = Color.LightGray.copy(alpha = 0.5f),
+                            modifier = Modifier.size(64.dp)
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "Henüz favori öğe yok",
+                            fontSize = 18.sp,
+                            color = Color.Gray
+                        )
+                    }
                 }
-            }
-        } else {
-            LazyColumn(
-                contentPadding = innerPadding,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                items(favoriteList) { favorite ->
-                    FavoriteItemCard(favorite.itemName)
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(favoriteList) { favorite ->
+                        FavoriteItemCard(favorite.itemName)
+                    }
                 }
             }
         }
@@ -84,7 +85,7 @@ fun FavoriteItemCard(itemName: String?) {
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         shape = MaterialTheme.shapes.medium,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(6.dp)
     ) {
         Row(
@@ -105,7 +106,6 @@ fun FavoriteItemCard(itemName: String?) {
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.weight(1f)
             )
-
         }
     }
 }

@@ -18,7 +18,6 @@ private val LightColorScheme = lightColorScheme(
     surface = LightBeige,
 )
 
-
 @Composable
 fun CoffeeAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
